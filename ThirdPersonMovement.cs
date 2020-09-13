@@ -13,7 +13,7 @@ public class ThirdPersonMovement : MonoBehaviour
     public float turnSmoothTime = 0.1f;
     public float gravity = -9.81f;
     public float jumpHeight = 3f;
-    public float speedMultiplier = 15f;
+    public float speedMultiplier = 10f;
     public float groundDistance = 0.4f;
 
     public Transform groundCheck;
@@ -34,8 +34,9 @@ public class ThirdPersonMovement : MonoBehaviour
 
         float horizontal = Input.GetAxisRaw("Horizontal");
         float vertical = Input.GetAxisRaw("Vertical");
-        Debug.Log(horizontal);
-        Debug.Log(vertical);
+        
+        Debug.Log("horizontal:" + horizontal);
+        Debug.Log("vertical:" + vertical);
 
         Vector3 direction = new Vector3(horizontal, 0f, vertical).normalized;
 
@@ -47,14 +48,11 @@ public class ThirdPersonMovement : MonoBehaviour
             // Modified code
             float verticalConvert = Mathf.Abs(vertical);
             float horizontalConvert = Mathf.Abs(horizontal);
-            float fasterSpeed = Mathf.Max(verticalConvert, horizontalConvert);
-            float slowerSpeed = Mathf.Min(verticalConvert, horizontalConvert);
 
-            speed = fasterSpeed * speedMultiplier;
+            speed = ((verticalConvert + horizontalConvert) * speedMultiplier);
 
-            float fullDiagonal = (fasterSpeed + slowerSpeed) * speedMultiplier;
             // Stops max speed from going above the highest speed value if vertical or horizontal is fully pushed
-            if(fullDiagonal >= speedMultiplier)
+            if(speed >= speedMultiplier)
                 {
                     speed = speedMultiplier;
                 }
