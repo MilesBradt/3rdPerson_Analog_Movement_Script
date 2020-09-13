@@ -13,7 +13,8 @@ public class ThirdPersonMovement : MonoBehaviour
     public float turnSmoothTime = 0.1f;
     public float gravity = -9.81f;
     public float jumpHeight = 3f;
-    public float speedMultiplier = 10f;
+    public float walkingSpeed = 6f;
+    public float runningSpeed = 12f;
     public float groundDistance = 0.4f;
 
     public Transform groundCheck;
@@ -23,6 +24,7 @@ public class ThirdPersonMovement : MonoBehaviour
 
     Vector3 velocity;
     bool isGrounded;
+    public bool isRunning = false;
 
     void Update()
     {
@@ -35,9 +37,6 @@ public class ThirdPersonMovement : MonoBehaviour
         float horizontal = Input.GetAxisRaw("Horizontal");
         float vertical = Input.GetAxisRaw("Vertical");
         
-        Debug.Log("horizontal:" + horizontal);
-        Debug.Log("vertical:" + vertical);
-
         Vector3 direction = new Vector3(horizontal, 0f, vertical).normalized;
 
         velocity.y += gravity * Time.deltaTime;
@@ -49,15 +48,29 @@ public class ThirdPersonMovement : MonoBehaviour
             float verticalConvert = Mathf.Abs(vertical);
             float horizontalConvert = Mathf.Abs(horizontal);
 
-            speed = ((verticalConvert + horizontalConvert) * speedMultiplier);
-
-            // Stops max speed from going above the highest speed value if vertical or horizontal is fully pushed
-            if(speed >= speedMultiplier)
+            if (isRunning == false && isGrounded)
+            {
+                speed = ((verticalConvert + horizontalConvert) * walkingSpeed);
+                // Stops max speed from going above the highest speed value if vertical or horizontal is fully pushed
+                if (speed >= walkingSpeed)
                 {
-                    speed = speedMultiplier;
+                    speed = walkingSpeed;
                 }
+            }
 
-            Debug.Log(speed);
+            if (Input.GetButtonDown("Run") && isGrounded)
+            {
+                isRunning = true;
+                speed = runningSpeed;
+
+                Debug.Log("running: " + isRunning);
+            }
+            else if (Input.GetButtonUp("Run"))
+            {
+                isRunning = false;
+                Debug.Log("running: " + isRunning);
+            }
+
             // Brackeys' code continued
             float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + cam.eulerAngles.y;
             float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, turnSmoothTime);
@@ -66,8 +79,11 @@ public class ThirdPersonMovement : MonoBehaviour
             controller.Move(moveDir.normalized * speed * Time.deltaTime);
         }
 
-        if (Input.GetButtonDown("Jump") && isGrounded) {
+        if (Input.GetButtonDown("Jump") && isGrounded)
+        {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
         }
+
     }
+
 }
