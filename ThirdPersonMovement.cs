@@ -13,7 +13,7 @@ public class ThirdPersonMovement : MonoBehaviour
     public float turnSmoothTime = 0.1f;
     public float gravity = -9.81f;
     public float jumpHeight = 3f;
-    public float speedMultiplier = 10f;
+    public float speedMultiplier = 15f;
     public float groundDistance = 0.4f;
 
     public Transform groundCheck;
@@ -52,9 +52,9 @@ public class ThirdPersonMovement : MonoBehaviour
             speed = fasterSpeed;
 
             // Stops max speed from going above the highest speed value if vertical or horizontal is fully pushed
-            if(fasterSpeed >= 10)
+            if(fasterSpeed >= speedMultiplier)
                 {
-                    speed = 10;
+                    speed = speedMultiplier;
                 } 
             
             // Brackeys' code continued
