@@ -24,7 +24,6 @@ public class ThirdPersonMovement : MonoBehaviour
     Vector3 velocity;
     bool isGrounded;
 
-
     void Update()
     {
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
@@ -48,15 +47,19 @@ public class ThirdPersonMovement : MonoBehaviour
             // Modified code
             float verticalConvert = Mathf.Abs(vertical);
             float horizontalConvert = Mathf.Abs(horizontal);
-            float fasterSpeed = Mathf.Max(verticalConvert, horizontalConvert) * speedMultiplier;
-            speed = fasterSpeed;
+            float fasterSpeed = Mathf.Max(verticalConvert, horizontalConvert);
+            float slowerSpeed = Mathf.Min(verticalConvert, horizontalConvert);
 
+            speed = fasterSpeed * speedMultiplier;
+
+            float fullDiagonal = (fasterSpeed + slowerSpeed) * speedMultiplier;
             // Stops max speed from going above the highest speed value if vertical or horizontal is fully pushed
-            if(fasterSpeed >= speedMultiplier)
+            if(fullDiagonal >= speedMultiplier)
                 {
                     speed = speedMultiplier;
-                } 
-            
+                }
+
+            Debug.Log(speed);
             // Brackeys' code continued
             float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + cam.eulerAngles.y;
             float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, turnSmoothTime);
